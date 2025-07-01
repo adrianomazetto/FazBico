@@ -1,6 +1,6 @@
 // Configuração do Supabase
-const SUPABASE_URL = 'SUA_URL_SUPABASE'; // Substitua pela sua URL
-const SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON_SUPABASE'; // Substitua pela sua chave
+const SUPABASE_URL = 'https://lbfhxcjdqbrsrusrmwwd.supabase.co'; // Substitua pela sua URL
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxiZmh4Y2pkcWJyc3J1c3Jtd3dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMzM3MTcsImV4cCI6MjA2NjkwOTcxN30._tgctgaHiy5yqHGmiisCJYEYTNsvXA_B16pL7I4XRrI'; // Substitua pela sua chave
 
 // Simulação do cliente Supabase para desenvolvimento
 // Em produção, use: import { createClient } from '@supabase/supabase-js'
@@ -140,6 +140,18 @@ function mockQuery(table, operation, params = {}) {
                 case 'prestadores':
                     if (operation === 'select') {
                         let data = [...mockData.prestadores];
+                        
+                        // Se está fazendo join com categorias, adicionar dados da categoria
+                        if (params.columns && params.columns.includes('categorias')) {
+                            data = data.map(prestador => {
+                                const categoria = mockData.categorias.find(cat => cat.id === prestador.categoria_id);
+                                return {
+                                    ...prestador,
+                                    categorias: categoria ? { nome: categoria.nome } : null
+                                };
+                            });
+                        }
+                        
                         if (params.eq) {
                             data = data.filter(item => item[params.eq.column] === params.eq.value);
                         }
@@ -152,7 +164,13 @@ function mockQuery(table, operation, params = {}) {
                         }
                         result.data = data;
                     } else if (operation === 'insert') {
-                        const newPrestador = { ...params, id: Date.now().toString() };
+                        const newPrestador = { 
+                            ...params, 
+                            id: Date.now().toString(),
+                            categoria_id: parseInt(params.categoria_id) || null,
+                            media_rank: 0,
+                            total_avaliacoes: 0
+                        };
                         mockData.prestadores.push(newPrestador);
                         result.data = [newPrestador];
                     }
@@ -346,12 +364,15 @@ function setupEventListeners() {
 // Carregar dados iniciais
 async function loadInitialData() {
     try {
-        // Carregar categorias
+        // Carregar categorias PRIMEIRO
         const { data: categoriasData } = await supabase.from('categorias').select('*');
         categorias = categoriasData || [];
         populateCategorySelects();
         
-        // Carregar prestadores
+        // Aguardar um momento para garantir que as categorias estejam carregadas
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Carregar prestadores DEPOIS
         await loadPrestadores();
         
     } catch (error) {
@@ -373,10 +394,22 @@ async function loadPrestadores() {
             `)
             .order('media_rank', { ascending: false });
         
-        prestadores = (prestadoresData || []).map(p => ({
-            ...p,
-            categoria_nome: p.categorias?.nome || 'Sem categoria'
-        }));
+        prestadores = (prestadoresData || []).map(p => {
+            // Encontrar categoria pelo ID se não vier do join
+            let categoriaNome = 'Sem categoria';
+            
+            if (p.categorias?.nome) {
+                categoriaNome = p.categorias.nome;
+            } else if (p.categoria_id) {
+                const categoria = categorias.find(cat => cat.id === p.categoria_id);
+                categoriaNome = categoria?.nome || 'Sem categoria';
+            }
+            
+            return {
+                ...p,
+                categoria_nome: categoriaNome
+            };
+        });
         
         filteredPrestadores = [...prestadores];
         renderPrestadores();
