@@ -1,37 +1,10 @@
-// =============================================
-// CONFIGURAÇÃO DO SUPABASE
-// =============================================
-// 🔧 PARA ATIVAR O SUPABASE REAL:
-// 1. Vá em: https://supabase.com/dashboard/project/SEU-PROJETO/settings/api
-// 2. Copie a "Project URL" e "anon public key"  
-// 3. Substitua as linhas abaixo pelas suas credenciais
-// 4. Mude USE_REAL_SUPABASE para true
+// Configuração do Supabase
+const SUPABASE_URL = 'https://lbfhxcjdqbrsrusrmwwd.supabase.co'; // Substitua pela sua URL
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxiZmh4Y2pkcWJyc3J1c3Jtd3dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMzM3MTcsImV4cCI6MjA2NjkwOTcxN30._tgctgaHiy5yqHGmiisCJYEYTNsvXA_B16pL7I4XRrI'; // Substitua pela sua chave
 
-// 📝 EXEMPLO DE COMO DEVE FICAR:
-// const SUPABASE_URL = 'https://abcdefghijklmnop.supabase.co';
-// const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmdoaWprbG1ub3AiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY5ODc2ODAwMCwiZXhwIjoyMDE0MzQ0MDAwfQ.exemplo';
-
-const SUPABASE_URL = 'https://lbfhxcjdqbrsrusrmwwd.supabase.co'; // 👈 SUBSTITUA pela sua URL
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxiZmh4Y2pkcWJyc3J1c3Jtd3dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMzM3MTcsImV4cCI6MjA2NjkwOTcxN30._tgctgaHiy5yqHGmiisCJYEYTNsvXA_B16pL7I4XRrI'; // 👈 SUBSTITUA pela sua chave
-
-// Para usar Supabase real, descomente as linhas abaixo e comente todo o mock
-/*
-const { createClient } = supabase;
-const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-*/
-
-// =============================================
-// FUNÇÃO PARA ALTERNAR ENTRE MOCK E SUPABASE REAL
-// =============================================
-const USE_REAL_SUPABASE = false; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
-
-// Cliente Supabase (será definido baseado na configuração)
-let supabaseClient;
-
-// =============================================
-// MOCK DO SUPABASE PARA DESENVOLVIMENTO
-// =============================================
-const mockSupabase = {
+// Simulação do cliente Supabase para desenvolvimento
+// Em produção, use: import { createClient } from '@supabase/supabase-js'
+const supabase = {
     auth: {
         signUp: async (credentials) => {
             console.log('SignUp:', credentials);
@@ -274,57 +247,23 @@ const elements = {
 
 // Inicialização da aplicação
 document.addEventListener('DOMContentLoaded', async () => {
-    initializeSupabase();
     await initializeApp();
     setupEventListeners();
     await loadInitialData();
     initializeCarousel();
 });
 
-// Inicializar Supabase baseado na configuração
-function initializeSupabase() {
-    if (USE_REAL_SUPABASE) {
-        // Validar credenciais
-        if (SUPABASE_URL === 'https://seu-projeto.supabase.co' || SUPABASE_ANON_KEY === 'sua-chave-anon') {
-            console.error('❌ Credenciais do Supabase não foram configuradas!');
-            console.log('📋 Siga as instruções no documento "🚀 Configuração Final - Ativar Supabase"');
-            USE_REAL_SUPABASE = false;
-            showToast('⚠️ Configure as credenciais do Supabase para usar modo produção', 'error');
-        } else if (typeof supabase !== 'undefined' && supabase.createClient) {
-            // Usar Supabase real
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('✅ Conectado ao Supabase:', SUPABASE_URL.replace(/https:\/\//, '').split('.')[0]);
-            showToast('✅ Conectado ao Supabase - Modo Produção Ativo!', 'success');
-        } else {
-            console.error('❌ Biblioteca do Supabase não foi carregada');
-            USE_REAL_SUPABASE = false;
-        }
-    }
-    
-    if (!USE_REAL_SUPABASE) {
-        // Usar mock
-        supabaseClient = mockSupabase;
-        console.log('🔧 Usando modo de desenvolvimento (mock)');
-        
-        // Mostrar indicador de desenvolvimento
-        const devIndicator = document.getElementById('devModeIndicator');
-        if (devIndicator) {
-            devIndicator.style.display = 'block';
-        }
-    }
-}
-
 // Inicializar aplicação
 async function initializeApp() {
     // Verificar se usuário está logado
-    const { data: { user } } = await supabaseClient.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (user) {
         currentUser = user;
         updateUIForLoggedUser();
     }
     
     // Monitorar mudanças de autenticação
-    supabaseClient.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN' && session) {
             currentUser = session.user;
             updateUIForLoggedUser();
@@ -426,7 +365,7 @@ function setupEventListeners() {
 async function loadInitialData() {
     try {
         // Carregar categorias PRIMEIRO
-        const { data: categoriasData } = await supabaseClient.from('categorias').select('*');
+        const { data: categoriasData } = await supabase.from('categorias').select('*');
         categorias = categoriasData || [];
         populateCategorySelects();
         
@@ -447,7 +386,7 @@ async function loadPrestadores() {
     try {
         elements.loading?.classList.remove('hidden');
         
-        const { data: prestadoresData } = await supabaseClient
+        const { data: prestadoresData } = await supabase
             .from('prestadores')
             .select(`
                 *,
@@ -636,7 +575,7 @@ async function handleLogin(e) {
     }
     
     try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password
         });
@@ -679,7 +618,7 @@ async function handleCadastro(e) {
     
     try {
         // Criar usuário
-        const { data, error } = await supabaseClient.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
             email,
             password,
             options: {
@@ -692,44 +631,17 @@ async function handleCadastro(e) {
         
         if (error) throw error;
         
-        // Criar perfil baseado no tipo de usuário
-        if (data.user) {
-            try {
-                if (userType === 'prestador') {
-                    // Criar registro na tabela prestadores
-                    const { error: prestadorError } = await supabaseClient.from('prestadores').insert({
-                        id: data.user.id,
-                        nome,
-                        descricao: descricao || '',
-                        telefone_whatsapp: telefone,
-                        categoria_id: parseInt(categoria),
-                        media_rank: 0,
-                        total_avaliacoes: 0
-                    });
-                    
-                    if (prestadorError) {
-                        console.error('Erro ao criar prestador:', prestadorError);
-                        throw new Error('Erro ao criar perfil de prestador');
-                    }
-                } else if (userType === 'contratante') {
-                    // Criar registro na tabela contratantes
-                    const { error: contratanteError } = await supabaseClient.from('contratantes').insert({
-                        id: data.user.id,
-                        nome,
-                        telefone: telefone || null
-                    });
-                    
-                    if (contratanteError) {
-                        console.error('Erro ao criar contratante:', contratanteError);
-                        throw new Error('Erro ao criar perfil de contratante');
-                    }
-                }
-            } catch (profileError) {
-                console.error('Erro ao criar perfil:', profileError);
-                // Em caso de erro no perfil, podemos tentar limpar o usuário criado
-                await supabaseClient.auth.signOut();
-                throw profileError;
-            }
+        // Se for prestador, criar registro na tabela prestadores
+        if (userType === 'prestador' && data.user) {
+            await supabase.from('prestadores').insert({
+                id: data.user.id,
+                nome,
+                descricao: descricao || '',
+                telefone_whatsapp: telefone,
+                categoria_id: parseInt(categoria),
+                media_rank: 0,
+                total_avaliacoes: 0
+            });
         }
         
         showToast('Cadastro realizado com sucesso!', 'success');
@@ -749,7 +661,7 @@ async function handleCadastro(e) {
 
 async function handleLogout() {
     try {
-        await supabaseClient.auth.signOut();
+        await supabase.auth.signOut();
         localStorage.removeItem('currentUser');
         showToast('Logout realizado com sucesso!', 'success');
     } catch (error) {
@@ -826,7 +738,7 @@ async function openPrestadorModal(prestadorId) {
 
 async function loadAvaliacoes(prestadorId) {
     try {
-        const { data: avaliacoes } = await supabaseClient
+        const { data: avaliacoes } = await supabase
             .from('avaliacoes')
             .select('*')
             .eq('prestador_id', prestadorId)
@@ -911,7 +823,7 @@ async function handleRating(e) {
     
     try {
         // Inserir avaliação
-        await supabaseClient.from('avaliacoes').insert({
+        await supabase.from('avaliacoes').insert({
             prestador_id: currentPrestador.id,
             contratante_id: currentUser.id,
             nota: rating,
@@ -1035,26 +947,5 @@ function changeSlide(newSlide) {
     }, 600);
 }
 
-// Função para testar conexão com Supabase
-async function testSupabaseConnection() {
-    try {
-        showToast('🔍 Testando conexão com Supabase...', 'info');
-        
-        const { data, error } = await supabaseClient.from('categorias').select('count', { count: 'exact' });
-        
-        if (error) {
-            throw error;
-        }
-        
-        showToast(`✅ Conexão OK! ${data.length} categorias encontradas`, 'success');
-        console.log('✅ Teste de conexão bem-sucedido:', data);
-        
-    } catch (error) {
-        console.error('❌ Erro no teste de conexão:', error);
-        showToast(`❌ Erro: ${error.message}`, 'error');
-    }
-}
-
 // Expose functions to global scope for onclick handlers
 window.openPrestadorModal = openPrestadorModal;
-window.testSupabaseConnection = testSupabaseConnection;

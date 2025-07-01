@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Header -->
@@ -294,6 +296,14 @@
     <div class="toast" id="toast">
         <span class="toast-message" id="toastMessage"></span>
         <button class="toast-close" id="toastClose">&times;</button>
+    </div>
+
+    <!-- Development Mode Indicator -->
+    <div id="devModeIndicator" style="position: fixed; bottom: 10px; left: 10px; background: #1f2937; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; z-index: 1000; display: none;">
+        🔧 Modo Desenvolvimento
+        <button onclick="testSupabaseConnection()" style="margin-left: 10px; background: #2563eb; color: white; border: none; padding: 2px 6px; border-radius: 3px; font-size: 10px; cursor: pointer;">
+            Testar Supabase
+        </button>
     </div>
 
     <script src="app.js"></script>
