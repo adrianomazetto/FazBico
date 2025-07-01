@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faz Bico! - Encontre o profissional ideal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Faz Bico!</h1>
+                    <span class="tagline">Conectando você ao profissional ideal</span>
+                </div>
+                <nav class="nav">
+                    <button class="nav-toggle" id="navToggle">☰</button>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="#home" class="nav-link active">Home</a></li>
+                        <li><a href="#" class="nav-link" id="loginBtn">Login</a></li>
+                        <li><a href="#" class="nav-link" id="cadastroBtn">Cadastrar</a></li>
+                        <li><a href="#" class="nav-link hidden" id="perfilBtn">Perfil</a></li>
+                        <li><a href="#" class="nav-link hidden" id="logoutBtn">Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h2 class="hero-title">Encontre o profissional perfeito para seu serviço</h2>
+                <p class="hero-subtitle">Conectamos você com prestadores qualificados e avaliados pela comunidade</p>
+            </div>
+        </section>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="container">
+                <div class="search-container">
+                    <div class="search-input-group">
+                        <input type="text" id="searchInput" class="search-input" placeholder="O que você está procurando?">
+                        <button class="search-btn" id="searchBtn">🔍</button>
+                    </div>
+                    <div class="categories-filter">
+                        <select id="categoryFilter" class="category-select">
+                            <option value="">Todas as categorias</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prestadores Section -->
+        <section class="prestadores-section">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Prestadores Disponíveis</h3>
+                    <div class="sort-options">
+                        <select id="sortSelect" class="sort-select">
+                            <option value="rating">Melhor avaliados</option>
+                            <option value="recent">Mais recentes</option>
+                            <option value="alphabetical">A-Z</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="prestadores-grid" id="prestadoresGrid">
+                    <!-- Prestadores cards will be loaded here -->
+                    <div class="loading" id="loading">Carregando prestadores...</div>
+                </div>
+                <button class="load-more-btn hidden" id="loadMoreBtn">Carregar mais</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Faz Bico!</h4>
+                    <p>Conectando profissionais a oportunidades</p>
+                </div>
+                <div class="footer-section">
+                    <h5>Links Úteis</h5>
+                    <ul>
+                        <li><a href="#como-funciona">Como funciona</a></li>
+                        <li><a href="#termos">Termos de uso</a></li>
+                        <li><a href="#privacidade">Privacidade</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Contato</h5>
+                    <p>suporte@fazbico.com.br</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Faz Bico! Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Entrar</h3>
+                <button class="modal-close" data-modal="loginModal">&times;</button>
+            </div>
+            <form class="form" id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Senha</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+                <p class="form-footer">
+                    Não tem conta? <a href="#" id="showCadastroModal">Cadastre-se</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cadastro Modal -->
+    <div class="modal" id="cadastroModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cadastrar</h3>
+                <button class="modal-close" data-modal="cadastroModal">&times;</button>
+            </div>
+            <form class="form" id="cadastroForm">
+                <div class="form-group">
+                    <label>Tipo de conta</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="userType" value="contratante" checked>
+                            <span>Contratante</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="userType" value="prestador">
+                            <span>Prestador</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cadastroNome">Nome completo</label>
+                    <input type="text" id="cadastroNome" required>
+                </div>
+                <div class="form-group">
+                    <label for="cadastroEmail">Email</label>
+                    <input type="email" id="cadastroEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="cadastroPassword">Senha</label>
+                    <input type="password" id="cadastroPassword" required>
+                </div>
+                <div class="form-group prestador-fields hidden">
+                    <label for="cadastroTelefone">WhatsApp</label>
+                    <input type="tel" id="cadastroTelefone" placeholder="(11) 99999-9999">
+                </div>
+                <div class="form-group prestador-fields hidden">
+                    <label for="cadastroDescricao">Descrição dos serviços</label>
+                    <textarea id="cadastroDescricao" rows="3" placeholder="Descreva os serviços que você oferece..."></textarea>
+                </div>
+                <div class="form-group prestador-fields hidden">
+                    <label for="cadastroCategoria">Categoria principal</label>
+                    <select id="cadastroCategoria">
+                        <option value="">Selecione uma categoria</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+                <p class="form-footer">
+                    Já tem conta? <a href="#" id="showLoginModal">Faça login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Prestador Detail Modal -->
+    <div class="modal" id="prestadorModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="prestadorNome">Nome do Prestador</h3>
+                <button class="modal-close" data-modal="prestadorModal">&times;</button>
+            </div>
+            <div class="prestador-detail">
+                <div class="prestador-info">
+                    <div class="prestador-rating">
+                        <div class="stars" id="prestadorStars"></div>
+                        <span class="rating-text" id="prestadorRatingText">0.0 (0 avaliações)</span>
+                    </div>
+                    <p class="prestador-categoria" id="prestadorCategoria">Categoria</p>
+                    <p class="prestador-descricao" id="prestadorDescricao">Descrição dos serviços</p>
+                </div>
+                <div class="prestador-actions">
+                    <button class="btn btn-primary btn-whatsapp" id="whatsappBtn">
+                        💬 Falar no WhatsApp
+                    </button>
+                    <button class="btn btn-secondary avaliar-btn hidden" id="avaliarBtn">
+                        ⭐ Avaliar Prestador
+                    </button>
+                </div>
+                <div class="avaliacoes-section">
+                    <h4>Avaliações</h4>
+                    <div class="avaliacoes-list" id="avaliacoesList">
+                        <!-- Avaliações will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div class="modal" id="ratingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Avaliar Prestador</h3>
+                <button class="modal-close" data-modal="ratingModal">&times;</button>
+            </div>
+            <form class="form" id="ratingForm">
+                <div class="form-group">
+                    <label>Sua avaliação</label>
+                    <div class="rating-input" id="ratingInput">
+                        <span class="star" data-rating="1">⭐</span>
+                        <span class="star" data-rating="2">⭐</span>
+                        <span class="star" data-rating="3">⭐</span>
+                        <span class="star" data-rating="4">⭐</span>
+                        <span class="star" data-rating="5">⭐</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ratingComentario">Comentário (opcional)</label>
+                    <textarea id="ratingComentario" rows="3" placeholder="Conte como foi sua experiência..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-message" id="toastMessage"></span>
+        <button class="toast-close" id="toastClose">&times;</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
