@@ -1,6 +1,6 @@
 // Configuração do Supabase
-const SUPABASE_URL = 'https://lbfhxcjdqbrsrusrmwwd.supabase.co'; // Substitua pela sua URL
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxiZmh4Y2pkcWJyc3J1c3Jtd3dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMzM3MTcsImV4cCI6MjA2NjkwOTcxN30._tgctgaHiy5yqHGmiisCJYEYTNsvXA_B16pL7I4XRrI'; // Substitua pela sua chave
+const SUPABASE_URL = 'SUA_URL_SUPABASE'; // Substitua pela sua URL
+const SUPABASE_ANON_KEY = 'SUA_CHAVE_ANON_SUPABASE'; // Substitua pela sua chave
 
 // Simulação do cliente Supabase para desenvolvimento
 // Em produção, use: import { createClient } from '@supabase/supabase-js'
@@ -184,6 +184,11 @@ let categorias = [];
 let filteredPrestadores = [];
 let currentPrestador = null;
 
+// Carousel state
+let currentSlide = 0;
+let carouselInterval;
+const totalSlides = 5;
+
 // Elementos DOM
 const elements = {
     // Navigation
@@ -227,6 +232,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await initializeApp();
     setupEventListeners();
     await loadInitialData();
+    initializeCarousel();
 });
 
 // Inicializar aplicação
@@ -309,6 +315,25 @@ function setupEventListeners() {
     
     // Rating stars
     setupRatingStars();
+    
+    // Carousel navigation
+    document.getElementById('carouselPrev')?.addEventListener('click', () => {
+        changeSlide(currentSlide - 1);
+        resetCarouselInterval();
+    });
+    
+    document.getElementById('carouselNext')?.addEventListener('click', () => {
+        changeSlide(currentSlide + 1);
+        resetCarouselInterval();
+    });
+    
+    // Carousel indicators
+    document.querySelectorAll('.indicator').forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            changeSlide(index);
+            resetCarouselInterval();
+        });
+    });
     
     // Click outside to close nav menu
     document.addEventListener('click', (e) => {
@@ -826,6 +851,67 @@ function hideToast() {
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR');
+}
+
+// Carousel functions
+function initializeCarousel() {
+    // Start automatic carousel
+    startCarouselInterval();
+    
+    // Pause on hover
+    const carouselContainer = document.querySelector('.carousel-container');
+    if (carouselContainer) {
+        carouselContainer.addEventListener('mouseenter', () => {
+            clearInterval(carouselInterval);
+        });
+        
+        carouselContainer.addEventListener('mouseleave', () => {
+            startCarouselInterval();
+        });
+    }
+}
+
+function startCarouselInterval() {
+    carouselInterval = setInterval(() => {
+        changeSlide((currentSlide + 1) % totalSlides);
+    }, 5000); // 5 segundos
+}
+
+function resetCarouselInterval() {
+    clearInterval(carouselInterval);
+    startCarouselInterval();
+}
+
+function changeSlide(newSlide) {
+    // Normalize slide index
+    if (newSlide < 0) {
+        newSlide = totalSlides - 1;
+    } else if (newSlide >= totalSlides) {
+        newSlide = 0;
+    }
+    
+    // Update slides
+    const slides = document.querySelectorAll('.carousel-slide');
+    const indicators = document.querySelectorAll('.indicator');
+    
+    // Remove active classes
+    slides[currentSlide]?.classList.remove('active');
+    indicators[currentSlide]?.classList.remove('active');
+    
+    // Add previous class for animation
+    slides[currentSlide]?.classList.add('prev');
+    
+    // Update current slide
+    currentSlide = newSlide;
+    
+    // Add active classes
+    slides[currentSlide]?.classList.add('active');
+    indicators[currentSlide]?.classList.add('active');
+    
+    // Remove previous classes after animation
+    setTimeout(() => {
+        slides.forEach(slide => slide.classList.remove('prev'));
+    }, 600);
 }
 
 // Expose functions to global scope for onclick handlers
