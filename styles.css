@@ -47,10 +47,9 @@ body {
     padding: 1rem 0;
 }
 
-.logo h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #2563eb;
+.logo-img {
+    height: 40px;
+    width: auto;
     margin-bottom: 0.25rem;
 }
 
@@ -691,6 +690,10 @@ body {
         padding: 0 2rem;
     }
     
+    .logo-img {
+        height: 50px;
+    }
+    
     .nav-toggle {
         display: none;
     }
@@ -747,6 +750,10 @@ body {
 
 /* Desktop Styles */
 @media (min-width: 1024px) {
+    .logo-img {
+        height: 60px;
+    }
+    
     .hero {
         padding: 3rem 0;
     }
