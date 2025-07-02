@@ -109,7 +109,6 @@ body {
 .hero-carousel {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: white;
     min-height: 300px;
     padding-top: 120px; /* Espaço suficiente para o header */
@@ -135,6 +134,21 @@ body {
     opacity: 0;
     transform: translateX(100%);
     transition: all 0.6s ease-in-out;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Overlay escuro para melhor legibilidade do texto */
+.carousel-slide::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
 }
 
 .carousel-slide.active {
@@ -146,48 +160,54 @@ body {
     transform: translateX(-100%);
 }
 
+/* Diferentes imagens para cada slide */
+.carousel-slide:nth-child(1) {
+    background-image: url('keys/prestadores-hero?prompt=Professional%20handyman%20working%20with%20tools%2C%20modern%20and%20clean%20workspace%2C%20blue%20tones%2C%20professional%20atmosphere');
+}
+
+.carousel-slide:nth-child(2) {
+    background-image: url('keys/avaliacoes-hero?prompt=Happy%20customers%20giving%20reviews%20and%20ratings%2C%205%20stars%2C%20satisfaction%2C%20testimonials%2C%20warm%20colors');
+}
+
+.carousel-slide:nth-child(3) {
+    background-image: url('keys/whatsapp-hero?prompt=Person%20using%20smartphone%20with%20WhatsApp%20interface%2C%20communication%2C%20messaging%2C%20green%20accents%2C%20modern%20tech');
+}
+
+.carousel-slide:nth-child(4) {
+    background-image: url('keys/cadastro-hero?prompt=Freelancer%20or%20service%20provider%20working%20on%20laptop%2C%20registration%20concept%2C%20professional%20setup%2C%20bright%20colors');
+}
+
+.carousel-slide:nth-child(5) {
+    background-image: url('keys/busca-hero?prompt=Person%20searching%20on%20computer%20or%20mobile%2C%20map%20interface%2C%20location%20services%2C%20category%20filters%2C%20purple%20blue%20gradient');
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    padding: 0 1rem;
+}
+
 .hero-title {
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
     animation: slideInUp 0.8s ease-out;
 }
 
 .hero-subtitle {
     font-size: 0.9rem;
-    opacity: 0.9;
+    opacity: 0.95;
     max-width: 300px;
     margin: 0 auto;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
     animation: slideInUp 0.8s ease-out 0.2s both;
 }
 
-/* Carousel Indicators */
+/* Carousel Indicators - REMOVIDOS */
 .carousel-indicators {
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 0.5rem;
-    z-index: 10;
-}
-
-.indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.4);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.indicator.active {
-    background: white;
-    transform: scale(1.2);
-}
-
-.indicator:hover {
-    background: rgba(255, 255, 255, 0.7);
+    display: none; /* Ocultar completamente os indicadores */
 }
 
 /* Carousel Navigation */
