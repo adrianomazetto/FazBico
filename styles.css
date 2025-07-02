@@ -110,14 +110,16 @@ body {
     position: relative;
     overflow: hidden;
     color: white;
-    min-height: 300px;
-    padding-top: 120px; /* Espaço suficiente para o header */
+    min-height: 500px; /* Aumentado para dar mais espaço */
+    height: 60vh; /* Usar viewport height para responsividade */
+    padding-top: 80px; /* Reduzido para maximizar espaço do carrossel */
 }
 
 .carousel-container {
     position: relative;
     width: 100%;
     height: 100%;
+    min-height: 420px; /* Garantir altura mínima */
 }
 
 .carousel-slide {
@@ -130,13 +132,14 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 2rem 0;
+    padding: 3rem 1rem; /* Mais padding vertical */
     opacity: 0;
     transform: translateX(100%);
     transition: all 0.6s ease-in-out;
     background-size: cover;
-    background-position: center;
+    background-position: center center;
     background-repeat: no-repeat;
+    background-attachment: local; /* Melhor performance */
 }
 
 /* Overlay escuro para melhor legibilidade do texto */
@@ -147,7 +150,10 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.3), 
+        rgba(0, 0, 0, 0.6)
+    ); /* Gradiente mais sutil */
     z-index: 1;
 }
 
@@ -160,26 +166,7 @@ body {
     transform: translateX(-100%);
 }
 
-/* Diferentes imagens para cada slide */
-.carousel-slide:nth-child(1) {
-    background-image: url('./carrossel01.png');
-}
-
-.carousel-slide:nth-child(2) {
-    background-image: url('keys/avaliacoes-hero?prompt=Happy%20customers%20giving%20reviews%20and%20ratings%2C%205%20stars%2C%20satisfaction%2C%20testimonials%2C%20warm%20colors');
-}
-
-.carousel-slide:nth-child(3) {
-    background-image: url('keys/whatsapp-hero?prompt=Person%20using%20smartphone%20with%20WhatsApp%20interface%2C%20communication%2C%20messaging%2C%20green%20accents%2C%20modern%20tech');
-}
-
-.carousel-slide:nth-child(4) {
-    background-image: url('keys/cadastro-hero?prompt=Freelancer%20or%20service%20provider%20working%20on%20laptop%2C%20registration%20concept%2C%20professional%20setup%2C%20bright%20colors');
-}
-
-.carousel-slide:nth-child(5) {
-    background-image: url('keys/busca-hero?prompt=Person%20searching%20on%20computer%20or%20mobile%2C%20map%20interface%2C%20location%20services%2C%20category%20filters%2C%20purple%20blue%20gradient');
-}
+/* As imagens são definidas inline no HTML para maior controle */
 
 .hero-content {
     position: relative;
@@ -189,20 +176,55 @@ body {
 }
 
 .hero-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
     animation: slideInUp 0.8s ease-out;
+    line-height: 1.2;
 }
 
 .hero-subtitle {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     opacity: 0.95;
-    max-width: 300px;
+    max-width: 500px;
     margin: 0 auto;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
     animation: slideInUp 0.8s ease-out 0.2s both;
+    line-height: 1.4;
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 768px) {
+    .hero-carousel {
+        min-height: 400px;
+        height: 50vh;
+        padding-top: 60px;
+    }
+    
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        max-width: 350px;
+    }
+    
+    .carousel-slide {
+        padding: 2rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.9rem;
+        max-width: 280px;
+    }
 }
 
 /* Carousel Indicators - REMOVIDOS */
