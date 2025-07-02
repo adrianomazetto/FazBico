@@ -11,8 +11,8 @@
 // const SUPABASE_URL = 'https://abcdefghijklmnop.supabase.co';
 // const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmdoaWprbG1ub3AiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTY5ODc2ODAwMCwiZXhwIjoyMDE0MzQ0MDAwfQ.exemplo';
 
-const SUPABASE_URL = 'https://lbfhxcjdqbrsrusrmwwd.supabase.co'; // 👈 SUBSTITUA pela sua URL
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxiZmh4Y2pkcWJyc3J1c3Jtd3dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzMzM3MTcsImV4cCI6MjA2NjkwOTcxN30._tgctgaHiy5yqHGmiisCJYEYTNsvXA_B16pL7I4XRrI'; // 👈 SUBSTITUA pela sua chave
+const SUPABASE_URL = 'https://seu-projeto.supabase.co'; // 👈 SUBSTITUA pela sua URL
+const SUPABASE_ANON_KEY = 'sua-chave-anon'; // 👈 SUBSTITUA pela sua chave
 
 // Para usar Supabase real, descomente as linhas abaixo e comente todo o mock
 /*
@@ -23,8 +23,7 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // =============================================
 // FUNÇÃO PARA ALTERNAR ENTRE MOCK E SUPABASE REAL
 // =============================================
-//const USE_REAL_SUPABASE = false; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
-const USE_REAL_SUPABASE = true; // ✅ ATIVAR MODO PRODUÇÃO
+const USE_REAL_SUPABASE = false; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
 
 // Cliente Supabase (será definido baseado na configuração)
 let supabaseClient;
@@ -744,7 +743,20 @@ async function handleCadastro(e) {
         
     } catch (error) {
         console.error('Erro no cadastro:', error);
-        showToast('Erro no cadastro. Tente novamente.', 'error');
+        
+        // Tratamento específico para diferentes tipos de erro
+        if (error.message?.includes('For security purposes')) {
+            const seconds = error.message.match(/(\d+) seconds/)?.[1] || '60';
+            showToast(`⏰ Aguarde ${seconds} segundos antes de tentar novamente por segurança`, 'error');
+        } else if (error.message?.includes('User already registered')) {
+            showToast('❌ Este email já está cadastrado. Tente fazer login.', 'error');
+        } else if (error.message?.includes('Invalid email')) {
+            showToast('❌ Email inválido. Verifique o formato.', 'error');
+        } else if (error.message?.includes('Password should be at least')) {
+            showToast('❌ A senha deve ter pelo menos 6 caracteres.', 'error');
+        } else {
+            showToast(`❌ Erro no cadastro: ${error.message}`, 'error');
+        }
     }
 }
 
