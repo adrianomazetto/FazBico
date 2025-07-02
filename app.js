@@ -23,8 +23,7 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // =============================================
 // FUNÇÃO PARA ALTERNAR ENTRE MOCK E SUPABASE REAL
 // =============================================
-//const USE_REAL_SUPABASE = false; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
-const USE_REAL_SUPABASE = true; // ✅ ATIVAR MODO PRODUÇÃO
+const USE_REAL_SUPABASE = true; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
 
 // Cliente Supabase (será definido baseado na configuração)
 let supabaseClient;
@@ -668,6 +667,10 @@ async function handleCadastro(e) {
     const descricao = document.getElementById('cadastroDescricao')?.value;
     const categoria = document.getElementById('cadastroCategoria')?.value;
     
+    console.log('🔍 Dados do formulário:', {
+        userType, nome, email, telefone, descricao, categoria
+    });
+    
     if (!userType || !nome || !email || !password) {
         showToast('Preencha todos os campos obrigatórios', 'error');
         return;
@@ -679,6 +682,8 @@ async function handleCadastro(e) {
     }
     
     try {
+        console.log('🔄 Iniciando cadastro de usuário...');
+        
         // Criar usuário
         const { data, error } = await supabaseClient.auth.signUp({
             email,
@@ -691,46 +696,82 @@ async function handleCadastro(e) {
             }
         });
         
-        if (error) throw error;
+        console.log('📤 Resposta do signUp:', { data, error });
+        
+        if (error) {
+            console.error('❌ Erro no signUp:', error);
+            throw error;
+        }
+        
+        if (!data.user) {
+            console.error('❌ Usuário não foi criado');
+            throw new Error('Falha ao criar usuário');
+        }
+        
+        console.log('✅ Usuário criado:', data.user.id);
         
         // Criar perfil baseado no tipo de usuário
-        if (data.user) {
-            try {
-                if (userType === 'prestador') {
-                    // Criar registro na tabela prestadores
-                    const { error: prestadorError } = await supabaseClient.from('prestadores').insert({
-                        id: data.user.id,
-                        nome,
-                        descricao: descricao || '',
-                        telefone_whatsapp: telefone,
-                        categoria_id: parseInt(categoria),
-                        media_rank: 0,
-                        total_avaliacoes: 0
-                    });
-                    
-                    if (prestadorError) {
-                        console.error('Erro ao criar prestador:', prestadorError);
-                        throw new Error('Erro ao criar perfil de prestador');
-                    }
-                } else if (userType === 'contratante') {
-                    // Criar registro na tabela contratantes
-                    const { error: contratanteError } = await supabaseClient.from('contratantes').insert({
-                        id: data.user.id,
-                        nome,
-                        telefone: telefone || null
-                    });
-                    
-                    if (contratanteError) {
-                        console.error('Erro ao criar contratante:', contratanteError);
-                        throw new Error('Erro ao criar perfil de contratante');
-                    }
+        try {
+            if (userType === 'prestador') {
+                console.log('🔄 Criando prestador...');
+                
+                const prestadorData = {
+                    id: data.user.id,
+                    nome,
+                    descricao: descricao || '',
+                    telefone_whatsapp: telefone,
+                    categoria_id: parseInt(categoria)
+                };
+                
+                console.log('📤 Dados do prestador:', prestadorData);
+                
+                const { data: prestadorResult, error: prestadorError } = await supabaseClient
+                    .from('prestadores')
+                    .insert(prestadorData);
+                
+                console.log('📥 Resposta prestadores:', { prestadorResult, prestadorError });
+                
+                if (prestadorError) {
+                    console.error('❌ Erro detalhado prestador:', prestadorError);
+                    throw new Error(`Erro ao criar prestador: ${prestadorError.message}`);
                 }
-            } catch (profileError) {
-                console.error('Erro ao criar perfil:', profileError);
-                // Em caso de erro no perfil, podemos tentar limpar o usuário criado
-                await supabaseClient.auth.signOut();
-                throw profileError;
+                
+                console.log('✅ Prestador criado com sucesso');
+                
+            } else if (userType === 'contratante') {
+                console.log('🔄 Criando contratante...');
+                
+                const contratanteData = {
+                    id: data.user.id,
+                    nome,
+                    telefone: telefone || null
+                };
+                
+                console.log('📤 Dados do contratante:', contratanteData);
+                
+                const { data: contratanteResult, error: contratanteError } = await supabaseClient
+                    .from('contratantes')
+                    .insert(contratanteData);
+                
+                console.log('📥 Resposta contratantes:', { contratanteResult, contratanteError });
+                
+                if (contratanteError) {
+                    console.error('❌ Erro detalhado contratante:', contratanteError);
+                    throw new Error(`Erro ao criar contratante: ${contratanteError.message}`);
+                }
+                
+                console.log('✅ Contratante criado com sucesso');
             }
+        } catch (profileError) {
+            console.error('❌ Erro ao criar perfil:', profileError);
+            // Em caso de erro no perfil, tentar limpar o usuário criado
+            try {
+                await supabaseClient.auth.signOut();
+                console.log('🧹 Usuário removido devido ao erro no perfil');
+            } catch (cleanupError) {
+                console.error('❌ Erro ao limpar usuário:', cleanupError);
+            }
+            throw profileError;
         }
         
         showToast('Cadastro realizado com sucesso!', 'success');
