@@ -162,7 +162,7 @@ body {
 
 /* Diferentes imagens para cada slide */
 .carousel-slide:nth-child(1) {
-    background-image: url('keys/prestadores-hero?prompt=Professional%20handyman%20working%20with%20tools%2C%20modern%20and%20clean%20workspace%2C%20blue%20tones%2C%20professional%20atmosphere');
+    background-image: url('./carrossel01.png');
 }
 
 .carousel-slide:nth-child(2) {
