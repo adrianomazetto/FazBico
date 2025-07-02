@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faz Bico! - Encontre o profissional ideal</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Faz Bico! - Conectando você aos melhores prestadores de serviços</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Supabase JS -->
+    
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -18,13 +23,12 @@
             <div class="header-content">
                 <div class="logo">
                     <img src="./logoFazBico.png" alt="Faz Bico!" class="logo-img">
-                    <span class="tagline">Conectando você ao profissional ideal</span>
                 </div>
+                
                 <nav class="nav">
                     <button class="nav-toggle" id="navToggle">☰</button>
                     <ul class="nav-menu" id="navMenu">
-                        <li><a href="#home" class="nav-link active">Home</a></li>
-                        <li><a href="#" class="nav-link" id="loginBtn">Login</a></li>
+                        <li><a href="#" class="nav-link" id="loginBtn">Entrar</a></li>
                         <li><a href="#" class="nav-link" id="cadastroBtn">Cadastrar</a></li>
                         <li><a href="#" class="nav-link hidden" id="perfilBtn">Perfil</a></li>
                         <li><a href="#" class="nav-link hidden" id="logoutBtn">Sair</a></li>
@@ -34,205 +38,194 @@
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="main">
-        <!-- Hero Carousel Section -->
-        <section class="hero-carousel">
+    <!-- Hero Carousel -->
+    <section class="hero-carousel">
+        <div class="container">
             <div class="carousel-container">
-                <div class="carousel-slide active" id="slide1">
-                    <div class="container">
-                        <h2 class="hero-title">Encontre o profissional perfeito para seu serviço</h2>
-                        <p class="hero-subtitle">Conectamos você com prestadores qualificados e avaliados pela comunidade</p>
-                    </div>
-                </div>
-                <div class="carousel-slide" id="slide2">
-                    <div class="container">
-                        <h2 class="hero-title">Prestadores verificados e confiáveis</h2>
-                        <p class="hero-subtitle">Todos os profissionais passam por processo de verificação e são avaliados pelos clientes</p>
-                    </div>
-                </div>
-                <div class="carousel-slide" id="slide3">
-                    <div class="container">
-                        <h2 class="hero-title">Contato direto via WhatsApp</h2>
-                        <p class="hero-subtitle">Converse diretamente com o prestador e negocie o melhor preço para seu serviço</p>
-                    </div>
-                </div>
-                <div class="carousel-slide" id="slide4">
-                    <div class="container">
-                        <h2 class="hero-title">Avalie e seja avaliado</h2>
-                        <p class="hero-subtitle">Sistema de avaliações mútuas para garantir a qualidade dos serviços</p>
-                    </div>
-                </div>
-                <div class="carousel-slide" id="slide5">
-                    <div class="container">
-                        <h2 class="hero-title">Cadastre-se gratuitamente</h2>
-                        <p class="hero-subtitle">Para prestadores e contratantes. Comece agora mesmo!</p>
+                <!-- Slide 1 -->
+                <div class="carousel-slide active">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Encontre os melhores prestadores de serviços</h1>
+                        <p class="hero-subtitle">Conectamos você a profissionais qualificados e avaliados pela comunidade</p>
                     </div>
                 </div>
                 
-                <!-- Carousel indicators -->
-                <div class="carousel-indicators">
-                    <span class="indicator active" data-slide="0"></span>
-                    <span class="indicator" data-slide="1"></span>
-                    <span class="indicator" data-slide="2"></span>
-                    <span class="indicator" data-slide="3"></span>
-                    <span class="indicator" data-slide="4"></span>
+                <!-- Slide 2 -->
+                <div class="carousel-slide">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Avaliações reais de clientes</h1>
+                        <p class="hero-subtitle">Escolha com confiança baseado na experiência de outros usuários</p>
+                    </div>
                 </div>
                 
-                <!-- Carousel navigation -->
+                <!-- Slide 3 -->
+                <div class="carousel-slide">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Contato direto via WhatsApp</h1>
+                        <p class="hero-subtitle">Fale diretamente com o prestador sem intermediários</p>
+                    </div>
+                </div>
+                
+                <!-- Slide 4 -->
+                <div class="carousel-slide">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Cadastro gratuito para prestadores</h1>
+                        <p class="hero-subtitle">Divulgue seus serviços e encontre novos clientes</p>
+                    </div>
+                </div>
+                
+                <!-- Slide 5 -->
+                <div class="carousel-slide">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Busque por categoria ou região</h1>
+                        <p class="hero-subtitle">Encontre exatamente o que precisa de forma rápida e fácil</p>
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
                 <button class="carousel-nav prev" id="carouselPrev">‹</button>
                 <button class="carousel-nav next" id="carouselNext">›</button>
-            </div>
-        </section>
-
-        <!-- Search Section -->
-        <section class="search-section">
-            <div class="container">
-                <div class="search-container">
-                    <div class="search-input-group">
-                        <input type="text" id="searchInput" class="search-input" placeholder="O que você está procurando?">
-                        <button class="search-btn" id="searchBtn">🔍</button>
-                    </div>
-                    <div class="categories-filter">
-                        <select id="categoryFilter" class="category-select">
-                            <option value="">Todas as categorias</option>
-                        </select>
-                    </div>
+                
+                <!-- Indicators -->
+                <div class="carousel-indicators">
+                    <button class="indicator active"></button>
+                    <button class="indicator"></button>
+                    <button class="indicator"></button>
+                    <button class="indicator"></button>
+                    <button class="indicator"></button>
                 </div>
-            </div>
-        </section>
-
-        <!-- Prestadores Section -->
-        <section class="prestadores-section">
-            <div class="container">
-                <div class="section-header">
-                    <h3>Prestadores Disponíveis</h3>
-                    <div class="sort-options">
-                        <select id="sortSelect" class="sort-select">
-                            <option value="rating">Melhor avaliados</option>
-                            <option value="recent">Mais recentes</option>
-                            <option value="alphabetical">A-Z</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="prestadores-grid" id="prestadoresGrid">
-                    <!-- Prestadores cards will be loaded here -->
-                    <div class="loading" id="loading">Carregando prestadores...</div>
-                </div>
-                <button class="load-more-btn hidden" id="loadMoreBtn">Carregar mais</button>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>Faz Bico!</h4>
-                    <p>Conectando profissionais a oportunidades</p>
-                </div>
-                <div class="footer-section">
-                    <h5>Links Úteis</h5>
-                    <ul>
-                        <li><a href="#como-funciona">Como funciona</a></li>
-                        <li><a href="#termos">Termos de uso</a></li>
-                        <li><a href="#privacidade">Privacidade</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h5>Contato</h5>
-                    <p>suporte@fazbico.com.br</p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Faz Bico! Todos os direitos reservados.</p>
             </div>
         </div>
-    </footer>
+    </section>
 
-    <!-- Modals -->
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-container">
+                <div class="search-input-group">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Buscar prestadores...">
+                    <button id="searchBtn" class="search-btn">🔍</button>
+                </div>
+                <select id="categoryFilter" class="category-select">
+                    <option value="">Todas as categorias</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prestadores Section -->
+    <section class="prestadores-section">
+        <div class="container">
+            <div class="section-header">
+                <h3>Prestadores Disponíveis</h3>
+                <select id="sortSelect" class="sort-select">
+                    <option value="rating">Melhor avaliados</option>
+                    <option value="recent">Mais recentes</option>
+                    <option value="alphabetical">A-Z</option>
+                </select>
+            </div>
+            
+            <div id="loading" class="loading hidden">
+                <p>Carregando prestadores...</p>
+            </div>
+            
+            <div id="prestadoresGrid" class="prestadores-grid">
+                <!-- Prestadores serão carregados aqui via JavaScript -->
+            </div>
+            
+            <button id="loadMoreBtn" class="load-more-btn hidden">Carregar mais</button>
+        </div>
+    </section>
+
     <!-- Login Modal -->
-    <div class="modal" id="loginModal">
+    <div id="loginModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Entrar</h3>
                 <button class="modal-close" data-modal="loginModal">&times;</button>
             </div>
-            <form class="form" id="loginForm">
+            <form id="loginForm" class="form">
                 <div class="form-group">
-                    <label for="loginEmail">Email</label>
+                    <label for="loginEmail">Email:</label>
                     <input type="email" id="loginEmail" required>
                 </div>
                 <div class="form-group">
-                    <label for="loginPassword">Senha</label>
+                    <label for="loginPassword">Senha:</label>
                     <input type="password" id="loginPassword" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Entrar</button>
-                <p class="form-footer">
-                    Não tem conta? <a href="#" id="showCadastroModal">Cadastre-se</a>
-                </p>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+                <div class="form-footer">
+                    <p>Não tem uma conta? <a href="#" id="showCadastroModal">Cadastre-se</a></p>
+                </div>
             </form>
         </div>
     </div>
 
     <!-- Cadastro Modal -->
-    <div class="modal" id="cadastroModal">
+    <div id="cadastroModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Cadastrar</h3>
                 <button class="modal-close" data-modal="cadastroModal">&times;</button>
             </div>
-            <form class="form" id="cadastroForm">
+            <form id="cadastroForm" class="form">
                 <div class="form-group">
-                    <label>Tipo de conta</label>
+                    <label>Tipo de usuário:</label>
                     <div class="radio-group">
                         <label class="radio-label">
                             <input type="radio" name="userType" value="contratante" checked>
-                            <span>Contratante</span>
+                            Contratante
                         </label>
                         <label class="radio-label">
                             <input type="radio" name="userType" value="prestador">
-                            <span>Prestador</span>
+                            Prestador
                         </label>
                     </div>
                 </div>
+                
                 <div class="form-group">
-                    <label for="cadastroNome">Nome completo</label>
+                    <label for="cadastroNome">Nome completo:</label>
                     <input type="text" id="cadastroNome" required>
                 </div>
+                
                 <div class="form-group">
-                    <label for="cadastroEmail">Email</label>
+                    <label for="cadastroEmail">Email:</label>
                     <input type="email" id="cadastroEmail" required>
                 </div>
+                
                 <div class="form-group">
-                    <label for="cadastroPassword">Senha</label>
-                    <input type="password" id="cadastroPassword" required>
+                    <label for="cadastroPassword">Senha:</label>
+                    <input type="password" id="cadastroPassword" required minlength="6">
                 </div>
+                
                 <div class="form-group prestador-fields hidden">
-                    <label for="cadastroTelefone">WhatsApp</label>
-                    <input type="tel" id="cadastroTelefone" placeholder="(11) 99999-9999">
+                    <label for="cadastroTelefone">Telefone/WhatsApp:</label>
+                    <input type="tel" id="cadastroTelefone" placeholder="11999999999">
                 </div>
+                
                 <div class="form-group prestador-fields hidden">
-                    <label for="cadastroDescricao">Descrição dos serviços</label>
-                    <textarea id="cadastroDescricao" rows="3" placeholder="Descreva os serviços que você oferece..."></textarea>
+                    <label for="cadastroDescricao">Descrição dos serviços:</label>
+                    <textarea id="cadastroDescricao" rows="3" placeholder="Descreva seus serviços e experiência..."></textarea>
                 </div>
+                
                 <div class="form-group prestador-fields hidden">
-                    <label for="cadastroCategoria">Categoria principal</label>
+                    <label for="cadastroCategoria">Categoria:</label>
                     <select id="cadastroCategoria">
                         <option value="">Selecione uma categoria</option>
                     </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Cadastrar</button>
-                <p class="form-footer">
-                    Já tem conta? <a href="#" id="showLoginModal">Faça login</a>
-                </p>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Cadastrar</button>
+                
+                <div class="form-footer">
+                    <p>Já tem uma conta? <a href="#" id="showLoginModal">Entrar</a></p>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Prestador Detail Modal -->
-    <div class="modal" id="prestadorModal">
+    <!-- Prestador Modal -->
+    <div id="prestadorModal" class="modal">
         <div class="modal-content modal-large">
             <div class="modal-header">
                 <h3 id="prestadorNome">Nome do Prestador</h3>
@@ -241,24 +234,26 @@
             <div class="prestador-detail">
                 <div class="prestador-info">
                     <div class="prestador-rating">
-                        <div class="stars" id="prestadorStars"></div>
-                        <span class="rating-text" id="prestadorRatingText">0.0 (0 avaliações)</span>
+                        <div id="prestadorStars" class="stars">⭐⭐⭐⭐⭐</div>
+                        <span id="prestadorRatingText" class="rating-text">5.0 (10)</span>
                     </div>
-                    <p class="prestador-categoria" id="prestadorCategoria">Categoria</p>
-                    <p class="prestador-descricao" id="prestadorDescricao">Descrição dos serviços</p>
+                    <p id="prestadorCategoria" class="prestador-categoria">Categoria</p>
+                    <p id="prestadorDescricao" class="prestador-descricao">Descrição do prestador</p>
                 </div>
+                
                 <div class="prestador-actions">
-                    <button class="btn btn-primary btn-whatsapp" id="whatsappBtn">
-                        💬 Falar no WhatsApp
+                    <button id="whatsappBtn" class="btn btn-whatsapp">
+                        💬 Chamar no WhatsApp
                     </button>
-                    <button class="btn btn-secondary avaliar-btn hidden" id="avaliarBtn">
+                    <button id="avaliarBtn" class="btn btn-primary avaliar-btn hidden">
                         ⭐ Avaliar Prestador
                     </button>
                 </div>
+                
                 <div class="avaliacoes-section">
                     <h4>Avaliações</h4>
-                    <div class="avaliacoes-list" id="avaliacoesList">
-                        <!-- Avaliações will be loaded here -->
+                    <div id="avaliacoesList">
+                        <!-- Avaliações serão carregadas aqui -->
                     </div>
                 </div>
             </div>
@@ -266,46 +261,179 @@
     </div>
 
     <!-- Rating Modal -->
-    <div class="modal" id="ratingModal">
+    <div id="ratingModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Avaliar Prestador</h3>
                 <button class="modal-close" data-modal="ratingModal">&times;</button>
             </div>
-            <form class="form" id="ratingForm">
+            <form id="ratingForm" class="form">
                 <div class="form-group">
-                    <label>Sua avaliação</label>
-                    <div class="rating-input" id="ratingInput">
-                        <span class="star" data-rating="1">⭐</span>
-                        <span class="star" data-rating="2">⭐</span>
-                        <span class="star" data-rating="3">⭐</span>
-                        <span class="star" data-rating="4">⭐</span>
-                        <span class="star" data-rating="5">⭐</span>
+                    <label>Sua avaliação:</label>
+                    <div id="ratingInput" class="rating-input">
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
+                        <span class="star">⭐</span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="ratingComentario">Comentário (opcional)</label>
+                    <label for="ratingComentario">Comentário (opcional):</label>
                     <textarea id="ratingComentario" rows="3" placeholder="Conte como foi sua experiência..."></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Enviar Avaliação</button>
             </form>
         </div>
     </div>
 
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content modal-extra-large">
+            <div class="modal-header">
+                <h3>Meu Perfil</h3>
+                <button class="modal-close" data-modal="profileModal">&times;</button>
+            </div>
+            <div class="form">
+                <!-- Profile Info Display -->
+                <div id="profileDisplay" class="profile-section">
+                    <div class="profile-info">
+                        <div class="profile-field">
+                            <span class="profile-label">Nome:</span>
+                            <span id="profileDisplayNome" class="profile-value">-</span>
+                        </div>
+                        <div class="profile-field">
+                            <span class="profile-label">Email:</span>
+                            <span id="profileDisplayEmail" class="profile-value">-</span>
+                        </div>
+                        <div class="profile-field">
+                            <span class="profile-label">Tipo de usuário:</span>
+                            <span id="profileDisplayTipo" class="profile-value">-</span>
+                        </div>
+                        <div id="profileDisplayTelefoneField" class="profile-field hidden">
+                            <span class="profile-label">Telefone:</span>
+                            <span id="profileDisplayTelefone" class="profile-value">-</span>
+                        </div>
+                        <div id="profileDisplayDescricaoField" class="profile-field hidden">
+                            <span class="profile-label">Descrição:</span>
+                            <span id="profileDisplayDescricao" class="profile-value">-</span>
+                        </div>
+                        <div id="profileDisplayCategoriaField" class="profile-field hidden">
+                            <span class="profile-label">Categoria:</span>
+                            <span id="profileDisplayCategoria" class="profile-value">-</span>
+                        </div>
+                        <div id="profileDisplayRankField" class="profile-field hidden">
+                            <span class="profile-label">Avaliação:</span>
+                            <span id="profileDisplayRank" class="profile-value">-</span>
+                        </div>
+                    </div>
+                    <button id="editProfileBtn" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
+                        ✏️ Editar Perfil
+                    </button>
+                </div>
+
+                <!-- Profile Edit Form -->
+                <div id="profileEditForm" class="profile-section hidden">
+                    <form id="profileUpdateForm">
+                        <div class="form-group">
+                            <label for="editNome">Nome:</label>
+                            <input type="text" id="editNome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email:</label>
+                            <input type="email" id="editEmail" required readonly style="background: #f3f4f6; color: #6b7280;">
+                            <small style="color: #6b7280; font-size: 0.8rem;">O email não pode ser alterado</small>
+                        </div>
+                        <div id="editTelefoneField" class="form-group hidden">
+                            <label for="editTelefone">Telefone/WhatsApp:</label>
+                            <input type="tel" id="editTelefone" placeholder="11999999999">
+                        </div>
+                        <div id="editDescricaoField" class="form-group hidden">
+                            <label for="editDescricao">Descrição:</label>
+                            <textarea id="editDescricao" rows="3" placeholder="Descreva seus serviços e experiência..."></textarea>
+                        </div>
+                        <div id="editCategoriaField" class="form-group hidden">
+                            <label for="editCategoria">Categoria:</label>
+                            <select id="editCategoria">
+                                <option value="">Selecione uma categoria</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; gap: 0.75rem;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">
+                                💾 Salvar Alterações
+                            </button>
+                            <button type="button" id="cancelEditBtn" class="btn btn-secondary" style="flex: 1;">
+                                ❌ Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="danger-zone">
+                    <h4>⚠️ Zona de Perigo</h4>
+                    <p>Esta ação é irreversível. Seus dados serão permanentemente removidos do sistema.</p>
+                    <button id="deleteAccountBtn" class="btn-danger">
+                        🗑️ Excluir Conta Permanentemente
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Modal -->
+    <div id="confirmDeleteModal" class="modal">
+        <div class="confirm-dialog">
+            <h3>⚠️ Confirmar Exclusão</h3>
+            <p>Tem certeza que deseja excluir sua conta permanentemente? Esta ação não pode ser desfeita e todos os seus dados serão perdidos.</p>
+            <div class="confirm-actions">
+                <button id="cancelDeleteBtn" class="btn btn-secondary">Cancelar</button>
+                <button id="confirmDeleteBtn" class="btn btn-danger">Excluir Permanentemente</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <span class="toast-message" id="toastMessage"></span>
-        <button class="toast-close" id="toastClose">&times;</button>
+    <div id="toast" class="toast">
+        <span id="toastMessage">Mensagem</span>
+        <button id="toastClose" class="toast-close">&times;</button>
     </div>
 
-    <!-- Development Mode Indicator -->
-    <div id="devModeIndicator" style="position: fixed; bottom: 10px; left: 10px; background: #1f2937; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; z-index: 1000; display: none;">
-        🔧 Modo Desenvolvimento
-        <button onclick="testSupabaseConnection()" style="margin-left: 10px; background: #2563eb; color: white; border: none; padding: 2px 6px; border-radius: 3px; font-size: 10px; cursor: pointer;">
-            Testar Supabase
-        </button>
-    </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Faz Bico!</h4>
+                    <p>Conectando você aos melhores prestadores de serviços da sua região.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h5>Para Contratantes</h5>
+                    <ul>
+                        <li><a href="#">Como funciona</a></li>
+                        <li><a href="#">Encontrar prestadores</a></li>
+                        <li><a href="#">Avaliar serviços</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h5>Para Prestadores</h5>
+                    <ul>
+                        <li><a href="#">Cadastrar-se</a></li>
+                        <li><a href="#">Dicas de perfil</a></li>
+                        <li><a href="#">Conseguir clientes</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Faz Bico! Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
+    <!-- JavaScript -->
     <script src="app.js"></script>
 </body>
 </html>
