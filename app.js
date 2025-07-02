@@ -23,7 +23,8 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // =============================================
 // FUNÇÃO PARA ALTERNAR ENTRE MOCK E SUPABASE REAL
 // =============================================
-const USE_REAL_SUPABASE = false; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
+//const USE_REAL_SUPABASE = false; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
+const USE_REAL_SUPABASE = true; // ✅ ATIVAR MODO PRODUÇÃO
 
 // Cliente Supabase (será definido baseado na configuração)
 let supabaseClient;
