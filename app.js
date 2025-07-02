@@ -23,7 +23,7 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // =============================================
 // FUNÇÃO PARA ALTERNAR ENTRE MOCK E SUPABASE REAL
 // =============================================
-const USE_REAL_SUPABASE = true; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
+const USE_REAL_SUPABASE = false; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
 
 // Cliente Supabase (será definido baseado na configuração)
 let supabaseClient;
@@ -796,6 +796,11 @@ async function handleCadastro(e) {
             showToast('❌ Email inválido. Verifique o formato.', 'error');
         } else if (error.message?.includes('Password should be at least')) {
             showToast('❌ A senha deve ter pelo menos 6 caracteres.', 'error');
+        } else if (error.message?.includes('foreign key constraint')) {
+            showToast('❌ Erro de configuração do banco. Execute a correção SQL.', 'error');
+            console.error('🔧 SOLUÇÃO: Execute o SQL de correção no Supabase para corrigir as foreign keys');
+        } else if (error.message?.includes('violates')) {
+            showToast('❌ Erro de validação no banco de dados.', 'error');
         } else {
             showToast(`❌ Erro no cadastro: ${error.message}`, 'error');
         }
