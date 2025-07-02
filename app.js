@@ -23,7 +23,7 @@ const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // =============================================
 // FUNÇÃO PARA ALTERNAR ENTRE MOCK E SUPABASE REAL
 // =============================================
-const USE_REAL_SUPABASE = true; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
+const USE_REAL_SUPABASE = false; // 👈 MUDE PARA true APÓS CONFIGURAR AS CREDENCIAIS
 
 // Cliente Supabase (será definido baseado na configuração)
 let supabaseClient;
@@ -1220,45 +1220,63 @@ async function loadUserProfile() {
 function displayUserProfile() {
     if (!currentUserProfile) return;
     
-    // Dados básicos
-    document.getElementById('profileDisplayNome').textContent = currentUserProfile.nome || '-';
-    document.getElementById('profileDisplayEmail').textContent = currentUserProfile.email || '-';
-    document.getElementById('profileDisplayTipo').textContent = 
+    console.log('📋 Exibindo perfil:', currentUserProfile);
+    
+    // Dados básicos - verificar se elementos existem
+    const nomeEl = document.getElementById('profileDisplayNome');
+    const emailEl = document.getElementById('profileDisplayEmail');
+    const tipoEl = document.getElementById('profileDisplayTipo');
+    
+    if (nomeEl) nomeEl.textContent = currentUserProfile.nome || '-';
+    if (emailEl) emailEl.textContent = currentUserProfile.email || '-';
+    if (tipoEl) tipoEl.textContent = 
         currentUserProfile.user_type === 'prestador' ? 'Prestador de Serviços' : 'Contratante';
     
     // Campos específicos por tipo
+    const telefoneField = document.getElementById('profileDisplayTelefoneField');
+    const descricaoField = document.getElementById('profileDisplayDescricaoField');
+    const categoriaField = document.getElementById('profileDisplayCategoriaField');
+    const rankField = document.getElementById('profileDisplayRankField');
+    
+    const telefoneEl = document.getElementById('profileDisplayTelefone');
+    const descricaoEl = document.getElementById('profileDisplayDescricao');
+    const categoriaEl = document.getElementById('profileDisplayCategoria');
+    const rankEl = document.getElementById('profileDisplayRank');
+    
     if (currentUserProfile.user_type === 'prestador') {
         // Mostrar campos de prestador
-        document.getElementById('profileDisplayTelefoneField').classList.remove('hidden');
-        document.getElementById('profileDisplayDescricaoField').classList.remove('hidden');
-        document.getElementById('profileDisplayCategoriaField').classList.remove('hidden');
-        document.getElementById('profileDisplayRankField').classList.remove('hidden');
+        if (telefoneField) telefoneField.classList.remove('hidden');
+        if (descricaoField) descricaoField.classList.remove('hidden');
+        if (categoriaField) categoriaField.classList.remove('hidden');
+        if (rankField) rankField.classList.remove('hidden');
         
-        document.getElementById('profileDisplayTelefone').textContent = 
-            currentUserProfile.telefone_whatsapp || '-';
-        document.getElementById('profileDisplayDescricao').textContent = 
-            currentUserProfile.descricao || '-';
-        document.getElementById('profileDisplayCategoria').textContent = 
-            currentUserProfile.categoria_nome || '-';
-        document.getElementById('profileDisplayRank').textContent = 
+        if (telefoneEl) telefoneEl.textContent = currentUserProfile.telefone_whatsapp || '-';
+        if (descricaoEl) descricaoEl.textContent = currentUserProfile.descricao || '-';
+        if (categoriaEl) categoriaEl.textContent = currentUserProfile.categoria_nome || '-';
+        if (rankEl) rankEl.textContent = 
             `${currentUserProfile.media_rank?.toFixed(1) || '0.0'} ⭐ (${currentUserProfile.total_avaliacoes || 0} avaliações)`;
     } else {
         // Ocultar campos de prestador
-        document.getElementById('profileDisplayTelefoneField').classList.add('hidden');
-        document.getElementById('profileDisplayDescricaoField').classList.add('hidden');
-        document.getElementById('profileDisplayCategoriaField').classList.add('hidden');
-        document.getElementById('profileDisplayRankField').classList.add('hidden');
+        if (telefoneField) telefoneField.classList.add('hidden');
+        if (descricaoField) descricaoField.classList.add('hidden');
+        if (categoriaField) categoriaField.classList.add('hidden');
+        if (rankField) rankField.classList.add('hidden');
         
         // Mostrar telefone se contratante tiver
-        if (currentUserProfile.telefone) {
-            document.getElementById('profileDisplayTelefoneField').classList.remove('hidden');
-            document.getElementById('profileDisplayTelefone').textContent = currentUserProfile.telefone;
+        if (currentUserProfile.telefone && telefoneField && telefoneEl) {
+            telefoneField.classList.remove('hidden');
+            telefoneEl.textContent = currentUserProfile.telefone;
         }
     }
     
     // Resetar para modo visualização
-    document.getElementById('profileDisplay').classList.remove('hidden');
-    document.getElementById('profileEditForm').classList.add('hidden');
+    const displayDiv = document.getElementById('profileDisplay');
+    const editDiv = document.getElementById('profileEditForm');
+    
+    if (displayDiv) displayDiv.classList.remove('hidden');
+    if (editDiv) editDiv.classList.add('hidden');
+    
+    console.log('✅ Perfil exibido com sucesso');
 }
 
 // Alternar entre visualização e edição
