@@ -521,6 +521,10 @@ body {
     max-width: 600px;
 }
 
+.modal-extra-large {
+    max-width: 800px;
+}
+
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -711,6 +715,114 @@ body {
     color: #4b5563;
     font-size: 0.9rem;
     line-height: 1.5;
+}
+
+/* Profile Section */
+.profile-section {
+    margin-bottom: 2rem;
+}
+
+.profile-info {
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.profile-field {
+    margin-bottom: 0.75rem;
+}
+
+.profile-field:last-child {
+    margin-bottom: 0;
+}
+
+.profile-label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.profile-value {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.danger-zone {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+.danger-zone h4 {
+    color: #dc2626;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.danger-zone p {
+    color: #7f1d1d;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.btn-danger:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Confirmation Dialog */
+.confirm-dialog {
+    background: #fff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    max-width: 400px;
+    width: 100%;
+    margin: 1rem;
+}
+
+.confirm-dialog h3 {
+    color: #dc2626;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.confirm-dialog p {
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.confirm-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.confirm-actions .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
 }
 
 /* Toast */
