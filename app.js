@@ -419,13 +419,7 @@ function setupEventListeners() {
         resetCarouselInterval();
     });
     
-    // Carousel indicators
-    document.querySelectorAll('.indicator').forEach((indicator, index) => {
-        indicator.addEventListener('click', () => {
-            changeSlide(index);
-            resetCarouselInterval();
-        });
-    });
+    // Carousel indicators - REMOVIDOS
     
     // Click outside to close nav menu
     document.addEventListener('click', (e) => {
@@ -1101,11 +1095,9 @@ function changeSlide(newSlide) {
     
     // Update slides
     const slides = document.querySelectorAll('.carousel-slide');
-    const indicators = document.querySelectorAll('.indicator');
     
     // Remove active classes
     slides[currentSlide]?.classList.remove('active');
-    indicators[currentSlide]?.classList.remove('active');
     
     // Add previous class for animation
     slides[currentSlide]?.classList.add('prev');
@@ -1115,7 +1107,6 @@ function changeSlide(newSlide) {
     
     // Add active classes
     slides[currentSlide]?.classList.add('active');
-    indicators[currentSlide]?.classList.add('active');
     
     // Remove previous classes after animation
     setTimeout(() => {
