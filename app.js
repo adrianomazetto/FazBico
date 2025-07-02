@@ -224,6 +224,7 @@ function mockQuery(table, operation, params = {}) {
 
 // Estado da aplicação
 let currentUser = null;
+let currentUserProfile = null;
 let prestadores = [];
 let categorias = [];
 let filteredPrestadores = [];
@@ -260,11 +261,14 @@ const elements = {
     cadastroModal: document.getElementById('cadastroModal'),
     prestadorModal: document.getElementById('prestadorModal'),
     ratingModal: document.getElementById('ratingModal'),
+    profileModal: document.getElementById('profileModal'),
+    confirmDeleteModal: document.getElementById('confirmDeleteModal'),
     
     // Forms
     loginForm: document.getElementById('loginForm'),
     cadastroForm: document.getElementById('cadastroForm'),
     ratingForm: document.getElementById('ratingForm'),
+    profileUpdateForm: document.getElementById('profileUpdateForm'),
     
     // Toast
     toast: document.getElementById('toast'),
@@ -341,6 +345,7 @@ function setupEventListeners() {
     elements.navToggle?.addEventListener('click', toggleNavMenu);
     elements.loginBtn?.addEventListener('click', () => openModal('loginModal'));
     elements.cadastroBtn?.addEventListener('click', () => openModal('cadastroModal'));
+    elements.perfilBtn?.addEventListener('click', openProfileModal);
     elements.logoutBtn?.addEventListener('click', handleLogout);
     
     // Search
@@ -353,6 +358,7 @@ function setupEventListeners() {
     elements.loginForm?.addEventListener('submit', handleLogin);
     elements.cadastroForm?.addEventListener('submit', handleCadastro);
     elements.ratingForm?.addEventListener('submit', handleRating);
+    elements.profileUpdateForm?.addEventListener('submit', handleProfileUpdate);
     
     // Modal closes
     document.querySelectorAll('.modal-close').forEach(btn => {
@@ -394,6 +400,13 @@ function setupEventListeners() {
     
     // Rating stars
     setupRatingStars();
+    
+    // Profile buttons
+    document.getElementById('editProfileBtn')?.addEventListener('click', toggleProfileEdit);
+    document.getElementById('cancelEditBtn')?.addEventListener('click', toggleProfileEdit);
+    document.getElementById('deleteAccountBtn')?.addEventListener('click', () => openModal('confirmDeleteModal'));
+    document.getElementById('cancelDeleteBtn')?.addEventListener('click', () => closeModal('confirmDeleteModal'));
+    document.getElementById('confirmDeleteBtn')?.addEventListener('click', handleDeleteAccount);
     
     // Carousel navigation
     document.getElementById('carouselPrev')?.addEventListener('click', () => {
@@ -652,7 +665,20 @@ async function handleLogin(e) {
         
     } catch (error) {
         console.error('Erro no login:', error);
-        showToast('Erro no login. Verifique suas credenciais.', 'error');
+        
+        // Tratamento específico para diferentes tipos de erro de login
+        if (error.message?.includes('Email not confirmed')) {
+            showToast('❌ Email não confirmado. Verifique sua caixa de entrada ou confirme no painel do Supabase.', 'error');
+            console.log('💡 SOLUÇÃO: Vá em Authentication > Settings no Supabase e desabilite "Enable email confirmations"');
+        } else if (error.message?.includes('Invalid login credentials')) {
+            showToast('❌ Credenciais inválidas. Verifique email e senha.', 'error');
+        } else if (error.message?.includes('Email rate limit exceeded')) {
+            showToast('❌ Muitas tentativas. Aguarde alguns minutos.', 'error');
+        } else if (error.message?.includes('signups not allowed')) {
+            showToast('❌ Cadastros não permitidos. Configure no Supabase.', 'error');
+        } else {
+            showToast(`❌ Erro no login: ${error.message}`, 'error');
+        }
     }
 }
 
@@ -1002,6 +1028,8 @@ function updateUIForLoggedUser() {
     elements.cadastroBtn?.classList.add('hidden');
     elements.perfilBtn?.classList.remove('hidden');
     elements.logoutBtn?.classList.remove('hidden');
+    
+    console.log('✅ UI atualizada para usuário logado:', currentUser?.email);
 }
 
 function updateUIForLoggedOut() {
@@ -1115,6 +1143,350 @@ async function testSupabaseConnection() {
     }
 }
 
+// =============================================
+// FUNÇÕES DO PERFIL
+// =============================================
+
+// Abrir modal de perfil
+async function openProfileModal() {
+    if (!currentUser) {
+        showToast('Você precisa fazer login para ver o perfil', 'error');
+        return;
+    }
+    
+    try {
+        await loadUserProfile();
+        displayUserProfile();
+        openModal('profileModal');
+    } catch (error) {
+        console.error('Erro ao carregar perfil:', error);
+        showToast('Erro ao carregar perfil. Tente novamente.', 'error');
+    }
+}
+
+// Carregar dados do usuário
+async function loadUserProfile() {
+    try {
+        console.log('🔄 Carregando perfil do usuário:', currentUser.id);
+        
+        // Tentar carregar como contratante primeiro
+        const { data: contratanteData, error: contratanteError } = await supabaseClient
+            .from('contratantes')
+            .select('*')
+            .eq('id', currentUser.id)
+            .single();
+        
+        if (contratanteData && !contratanteError) {
+            currentUserProfile = {
+                ...contratanteData,
+                email: currentUser.email,
+                user_type: 'contratante'
+            };
+            console.log('✅ Perfil de contratante carregado:', currentUserProfile);
+            return;
+        }
+        
+        // Se não for contratante, tentar como prestador
+        const { data: prestadorData, error: prestadorError } = await supabaseClient
+            .from('prestadores')
+            .select(`
+                *,
+                categorias (nome)
+            `)
+            .eq('id', currentUser.id)
+            .single();
+        
+        if (prestadorData && !prestadorError) {
+            currentUserProfile = {
+                ...prestadorData,
+                email: currentUser.email,
+                user_type: 'prestador',
+                categoria_nome: prestadorData.categorias?.nome || 'Sem categoria'
+            };
+            console.log('✅ Perfil de prestador carregado:', currentUserProfile);
+            return;
+        }
+        
+        // Se chegou aqui, não encontrou perfil
+        throw new Error('Perfil não encontrado');
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar perfil:', error);
+        throw error;
+    }
+}
+
+// Exibir dados do perfil
+function displayUserProfile() {
+    if (!currentUserProfile) return;
+    
+    // Dados básicos
+    document.getElementById('profileDisplayNome').textContent = currentUserProfile.nome || '-';
+    document.getElementById('profileDisplayEmail').textContent = currentUserProfile.email || '-';
+    document.getElementById('profileDisplayTipo').textContent = 
+        currentUserProfile.user_type === 'prestador' ? 'Prestador de Serviços' : 'Contratante';
+    
+    // Campos específicos por tipo
+    if (currentUserProfile.user_type === 'prestador') {
+        // Mostrar campos de prestador
+        document.getElementById('profileDisplayTelefoneField').classList.remove('hidden');
+        document.getElementById('profileDisplayDescricaoField').classList.remove('hidden');
+        document.getElementById('profileDisplayCategoriaField').classList.remove('hidden');
+        document.getElementById('profileDisplayRankField').classList.remove('hidden');
+        
+        document.getElementById('profileDisplayTelefone').textContent = 
+            currentUserProfile.telefone_whatsapp || '-';
+        document.getElementById('profileDisplayDescricao').textContent = 
+            currentUserProfile.descricao || '-';
+        document.getElementById('profileDisplayCategoria').textContent = 
+            currentUserProfile.categoria_nome || '-';
+        document.getElementById('profileDisplayRank').textContent = 
+            `${currentUserProfile.media_rank?.toFixed(1) || '0.0'} ⭐ (${currentUserProfile.total_avaliacoes || 0} avaliações)`;
+    } else {
+        // Ocultar campos de prestador
+        document.getElementById('profileDisplayTelefoneField').classList.add('hidden');
+        document.getElementById('profileDisplayDescricaoField').classList.add('hidden');
+        document.getElementById('profileDisplayCategoriaField').classList.add('hidden');
+        document.getElementById('profileDisplayRankField').classList.add('hidden');
+        
+        // Mostrar telefone se contratante tiver
+        if (currentUserProfile.telefone) {
+            document.getElementById('profileDisplayTelefoneField').classList.remove('hidden');
+            document.getElementById('profileDisplayTelefone').textContent = currentUserProfile.telefone;
+        }
+    }
+    
+    // Resetar para modo visualização
+    document.getElementById('profileDisplay').classList.remove('hidden');
+    document.getElementById('profileEditForm').classList.add('hidden');
+}
+
+// Alternar entre visualização e edição
+function toggleProfileEdit() {
+    const displayDiv = document.getElementById('profileDisplay');
+    const editDiv = document.getElementById('profileEditForm');
+    
+    if (displayDiv.classList.contains('hidden')) {
+        // Cancelar edição - voltar para visualização
+        displayDiv.classList.remove('hidden');
+        editDiv.classList.add('hidden');
+    } else {
+        // Iniciar edição
+        populateEditForm();
+        displayDiv.classList.add('hidden');
+        editDiv.classList.remove('hidden');
+    }
+}
+
+// Preencher formulário de edição
+function populateEditForm() {
+    if (!currentUserProfile) return;
+    
+    // Dados básicos
+    document.getElementById('editNome').value = currentUserProfile.nome || '';
+    document.getElementById('editEmail').value = currentUserProfile.email || '';
+    
+    // Campos específicos por tipo
+    if (currentUserProfile.user_type === 'prestador') {
+        // Mostrar campos de prestador
+        document.getElementById('editTelefoneField').classList.remove('hidden');
+        document.getElementById('editDescricaoField').classList.remove('hidden');
+        document.getElementById('editCategoriaField').classList.remove('hidden');
+        
+        document.getElementById('editTelefone').value = currentUserProfile.telefone_whatsapp || '';
+        document.getElementById('editDescricao').value = currentUserProfile.descricao || '';
+        document.getElementById('editCategoria').value = currentUserProfile.categoria_id || '';
+        
+        // Marcar campos como obrigatórios
+        document.getElementById('editTelefone').required = true;
+        document.getElementById('editCategoria').required = true;
+    } else {
+        // Ocultar campos de prestador
+        document.getElementById('editTelefoneField').classList.add('hidden');
+        document.getElementById('editDescricaoField').classList.add('hidden');
+        document.getElementById('editCategoriaField').classList.add('hidden');
+        
+        // Para contratante, telefone é opcional
+        if (currentUserProfile.telefone) {
+            document.getElementById('editTelefoneField').classList.remove('hidden');
+            document.getElementById('editTelefone').value = currentUserProfile.telefone;
+            document.getElementById('editTelefone').required = false;
+        }
+    }
+    
+    // Preencher select de categorias
+    const categoriaSelect = document.getElementById('editCategoria');
+    categoriaSelect.innerHTML = '<option value="">Selecione uma categoria</option>';
+    categorias.forEach(categoria => {
+        const option = document.createElement('option');
+        option.value = categoria.id;
+        option.textContent = categoria.nome;
+        categoriaSelect.appendChild(option);
+    });
+    
+    // Selecionar categoria atual
+    if (currentUserProfile.categoria_id) {
+        categoriaSelect.value = currentUserProfile.categoria_id;
+    }
+}
+
+// Salvar alterações do perfil
+async function handleProfileUpdate(e) {
+    e.preventDefault();
+    
+    if (!currentUserProfile) {
+        showToast('Erro: perfil não carregado', 'error');
+        return;
+    }
+    
+    try {
+        console.log('🔄 Atualizando perfil...');
+        
+        // Coletar dados do formulário
+        const nome = document.getElementById('editNome').value;
+        const telefone = document.getElementById('editTelefone').value;
+        const descricao = document.getElementById('editDescricao').value;
+        const categoria = document.getElementById('editCategoria').value;
+        
+        if (!nome.trim()) {
+            showToast('Nome é obrigatório', 'error');
+            return;
+        }
+        
+        // Atualizar baseado no tipo de usuário
+        if (currentUserProfile.user_type === 'prestador') {
+            if (!telefone.trim() || !categoria) {
+                showToast('Telefone e categoria são obrigatórios para prestadores', 'error');
+                return;
+            }
+            
+            const updateData = {
+                nome: nome.trim(),
+                telefone_whatsapp: telefone.trim(),
+                descricao: descricao.trim(),
+                categoria_id: parseInt(categoria)
+            };
+            
+            console.log('📤 Atualizando prestador:', updateData);
+            
+            const { error } = await supabaseClient
+                .from('prestadores')
+                .update(updateData)
+                .eq('id', currentUser.id);
+            
+            if (error) throw error;
+            
+        } else {
+            // Contratante
+            const updateData = {
+                nome: nome.trim(),
+                telefone: telefone.trim() || null
+            };
+            
+            console.log('📤 Atualizando contratante:', updateData);
+            
+            const { error } = await supabaseClient
+                .from('contratantes')
+                .update(updateData)
+                .eq('id', currentUser.id);
+            
+            if (error) throw error;
+        }
+        
+        console.log('✅ Perfil atualizado com sucesso');
+        showToast('Perfil atualizado com sucesso!', 'success');
+        
+        // Recarregar perfil e voltar para visualização
+        await loadUserProfile();
+        displayUserProfile();
+        
+        // Se é prestador, recarregar lista de prestadores
+        if (currentUserProfile.user_type === 'prestador') {
+            await loadPrestadores();
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao atualizar perfil:', error);
+        showToast(`Erro ao atualizar perfil: ${error.message}`, 'error');
+    }
+}
+
+// Excluir conta
+async function handleDeleteAccount() {
+    if (!currentUser) {
+        showToast('Erro: usuário não encontrado', 'error');
+        return;
+    }
+    
+    try {
+        console.log('🔄 Excluindo conta do usuário:', currentUser.id);
+        
+        // Mostrar loading
+        const deleteBtn = document.getElementById('confirmDeleteBtn');
+        const originalText = deleteBtn.textContent;
+        deleteBtn.textContent = 'Excluindo...';
+        deleteBtn.disabled = true;
+        
+        // Excluir perfil específico primeiro (cascata vai cuidar do resto)
+        if (currentUserProfile?.user_type === 'prestador') {
+            const { error: prestadorError } = await supabaseClient
+                .from('prestadores')
+                .delete()
+                .eq('id', currentUser.id);
+            
+            if (prestadorError) {
+                console.warn('Aviso ao deletar prestador:', prestadorError);
+            }
+        } else {
+            const { error: contratanteError } = await supabaseClient
+                .from('contratantes')
+                .delete()
+                .eq('id', currentUser.id);
+            
+            if (contratanteError) {
+                console.warn('Aviso ao deletar contratante:', contratanteError);
+            }
+        }
+        
+        // Excluir usuário da autenticação (isso deve deletar tudo em cascata)
+        const { error: authError } = await supabaseClient.auth.admin.deleteUser(currentUser.id);
+        
+        if (authError) {
+            // Se não conseguir deletar via admin, fazer logout
+            console.warn('Não foi possível deletar via admin, fazendo logout:', authError);
+        }
+        
+        // Fazer logout
+        await supabaseClient.auth.signOut();
+        
+        console.log('✅ Conta excluída com sucesso');
+        showToast('Conta excluída com sucesso!', 'success');
+        
+        // Fechar modais
+        closeModal('confirmDeleteModal');
+        closeModal('profileModal');
+        
+        // Recarregar prestadores se necessário
+        if (currentUserProfile?.user_type === 'prestador') {
+            await loadPrestadores();
+        }
+        
+        // Limpar estado
+        currentUser = null;
+        currentUserProfile = null;
+        
+    } catch (error) {
+        console.error('❌ Erro ao excluir conta:', error);
+        showToast(`Erro ao excluir conta: ${error.message}`, 'error');
+        
+        // Restaurar botão
+        const deleteBtn = document.getElementById('confirmDeleteBtn');
+        deleteBtn.textContent = originalText;
+        deleteBtn.disabled = false;
+    }
+}
+
 // Expose functions to global scope for onclick handlers
 window.openPrestadorModal = openPrestadorModal;
 window.testSupabaseConnection = testSupabaseConnection;
+window.openProfileModal = openProfileModal;
